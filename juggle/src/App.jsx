@@ -21,16 +21,19 @@ const App = () => {
     );
     const data = await response.json();
     console.log(data);
-    setBreedData(data);
+    const filtered = data.filter((item) => Boolean(item.image)); // saving only objects that has images
+    const secondFilter = filtered.filter((item) => Boolean(item.cfa_url)); // filter again and keep only ones with link with additional information
+    // console.log(secondFilter);
+    setBreedData(secondFilter);
   }, []);
 
   const renderData = (data, index) => {
-    const img = breedData[23].image.url; // TODO throw error URL is undefined, works with any index like so
-    // console.log(img);
+    const img = breedData[index].image.url;
+    const infoLink = breedData[index].cfa_url;
     return (
-      <div className="App">
-        <div className="card" key={breedData[index]}>
-          <img className="card-img-top" src={img} alt="Cat image"></img>
+      <div className="App" key={breedData[index].id}>
+        <div className="card">
+          <img className="card-img-top" src={img} alt="Cat here :)"></img>
           <div className="card-body">
             <h5 className="card-title">Cat Breed - {breedData[index].name}</h5>
             <p className="card-text">
@@ -40,6 +43,9 @@ const App = () => {
               Short legs - {breedData[index].short_legs}
             </p>
             <p className="card-text">{breedData[index].description}</p>
+            <a href={infoLink} target="_blank" rel="noreferrer">
+              Learn More!
+            </a>
           </div>
         </div>
       </div>
