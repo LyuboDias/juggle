@@ -1,30 +1,86 @@
-// import React, { Component, Fragment } from 'react';
-// import PropTypes from 'prop-types';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import ReactPaginate from "react-paginate";
+import { requestOptions } from "../apiHeaders";
+import { baseUrl } from "../apiUrl";
 
-// class Pagination extends Component {
-//  constructor(props) {
-//   super(props);
-//   const { totalRecords = null, pageLimit = 30, pageNeighbours = 0 } = props;
+const RenderCats = () => {
+  const [offset, setOffset] = useState(0);
+  const [data, setData] = useState([]);
+  const [perPage] = useState(8);
+  const [pageCount, setPageCount] = useState(0);
+  const url = `${baseUrl}breeds?`;
 
-//   this.pageLimit = typeof pageLimit === 'number' ? pageLimit : 30;
-//   this.totalRecords = typeof totalRecords === 'number' ? totalRecords : 0;
+  const getData = async () => {
+    const res = await axios.get(url, requestOptions);
+    const data = res.data;
+    const slice = data.slice(offset, offset + perPage);
+    // console.log(slice);
+    const postData = slice.map((pd) => (
+      <div className="App" key={pd.id}>
+        <div className="col ">
+          <div className="card">
+            <div className="img-div">
+              {pd.image && (
+                <img className="card-img-top" src={pd.image.url}></img>
+              )}
+            </div>
+            <div className="card-body">
+              <h5 className="card-title">Breed - {pd.name}</h5>
+              {pd.cfa_url && (
+                <a href={pd.cfa_url} target="_blank" rel="noreferrer">
+                  Learn More!
+                </a>
+              )}
+              <p className="card-text">
+                Affection Level -{" "}
+                {pd.affection_level >= 4 ? "❤️❤️❤️" : "💔💔💔"}
+              </p>
 
-//   // pageNeighbours can be: 0, 1 or 2
-//   this.pageNeighbours = typeof pageNeighbours === 'number'
-//    ? Math.max(0, Math.min(pageNeighbours, 2))
-//    : 0;
+              <p className="card-text">
+                Short legs - {pd.short_legs == 0 ? "NO ❌" : "YES 😬"}
+              </p>
+              <p className="card-text">{pd.description}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    ));
 
-//   this.totalPages = Math.ceil(this.totalRecords / this.pageLimit);
+    setData(postData);
+    setPageCount(Math.ceil(data.length / perPage));
+  };
 
-//   this.state = { currentPage: 1 };
-//  }
-// }
+  useEffect(() => {
+    getData();
+  }, [offset]);
 
-// Pagination.propTypes = {
-//  totalRecords: PropTypes.number.isRequired,
-//  pageLimit: PropTypes.number,
-//  pageNeighbours: PropTypes.number,
-//  onPageChanged: PropTypes.func
-// };
+  const handlePageClick = (e) => {
+    const selectedPage = e.selected;
 
-// export default Pagination;
+    setOffset(selectedPage * perPage);
+  };
+
+  return (
+    <div>
+      <ReactPaginate
+        previousLabel={"prev"}
+        nextLabel={"next"}
+        breakLabel={"..."}
+        breakClassName={"break-me"}
+        pageCount={pageCount}
+        marginPagesDisplayed={2}
+        pageRangeDisplayed={5}
+        onPageChange={handlePageClick}
+        containerClassName={"pagination"}
+        subContainerClassName={"pages pagination"}
+        activeClassName={"active"}
+      />
+      <div className="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
+        {data}
+      </div>
+    </div>
+  );
+};
+
+export default RenderCats;
