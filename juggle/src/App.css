@@ -1,7 +1,7 @@
 .App {
-  text-align: center;
+  /* text-align: center;
   max-width: 600px;
-  margin: 50px auto;
+  margin: 50px auto; */
 }
 
 .card {
@@ -19,4 +19,24 @@
   width: 100%;
   text-align: center;
   padding: 10px 0;
+}
+
+.img-div {
+  background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdfZNovqx9DkbeuV2dfr8qPIv_T6ImpYcZXA&usqp=CAU");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 300px;
+  height: 200px;
+  text-align: center;
+}
+
+.card-img-top {
+  width: 300px;
+  height: 200px;
+}
+
+.card {
+  width: 300px;
+  /* max-height: 400px; */
 }
